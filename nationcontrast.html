@@ -1,0 +1,141 @@
+<html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"
+      lang="en">
+<head>
+    <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <link href="style.css" rel="stylesheet">
+    <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Nation Contrast</title>
+
+    <py-env>
+      - pandas
+      - matplotlib
+      - paths:
+        - /request.py
+        - /logic.py
+    </py-env>
+
+</head>
+
+<body>
+<div class="container">
+    <div class="header clearfix">
+        <nav>
+            <ul class="nav nav-pills float-right">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contact</a>
+                </li>
+            </ul>
+        </nav>
+        <h3 class="text-muted">NationContrast</h3>
+    </div>
+
+    <div class="jumbotron">
+        <h1 class="display-5">Country differences</h1>
+        <p class="lead">This is a dashboard to compare economic indicators between countries</p>
+        <p></p>
+    </div>
+
+    <div class="row marketing">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Currency Exchange Rate</h5>
+                    <p class="card-text">The exchange rate is the value of one nation's currency versus the currency of
+                        another nation.
+                        It compares against 1 USD.
+                    </p>
+                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                </div>
+                <div id="plot1">
+                    <div class="d-flex justify-content-center">
+                        <strong>Gathering data in real time ... </strong>
+                        <div class="spinner-border spinner-border-sm" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form class="form-inline justify-content-center">
+                        <select class="form-control form-control-sm" id="select-plot1">
+                            <option>Argentina</option>
+                            <option>Norway</option>
+                        </select>
+                    </form>
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm" id="zoom-plot1">Zoom</button>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Consumer Price Index</h5>
+                    <p class="card-text">It measures the overall change in consumer prices over time based on a
+                        representative basket of goods and services.
+                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                </div>
+                <div id="plot2">
+                    <div class="d-flex justify-content-center">
+                        <strong>Gathering data in real time ... </strong>
+                        <div class="spinner-border spinner-border-sm" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form class="form-inline justify-content-center">
+                        <select class="form-control form-control-sm" id="select-plot2">
+                            <option>Argentina</option>
+                            <option>Norway</option>
+                        </select>
+                    </form>
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm" id="zoom-plot2">Zoom</button>
+            </div>
+        </div>
+
+        <div class="modal fade" id="full-plot" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ModalLabel">Argentina Currency</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="plot-modal"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>© Fernando 2022</p>
+        </footer>
+
+    </div>
+
+    <py-script src="/logic.py"></py-script>
+
+</div>
+
+</body>
+
+</html>
