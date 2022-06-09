@@ -1,5 +1,7 @@
 import asyncio
 import json
+from datetime import datetime
+
 from request import request
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
@@ -37,16 +39,16 @@ class NorwayApiManager:
 
     async def get_all_time_series(self):
         await self.get_time_series('currency')
-        await self.get_time_series('cpi')
 
 
 class NorwayDataManager:
 
-    def __init__(self, data):
+    def __init__(self, data=None, csv_mode=None):
         self.data = data
+        if csv_mode:
+            self.csv_url = '''https://www.norges-bank.no/globalassets/marketdata/ppo/kpi/kpi_tab_en.csv?v=05/11/2022140203&ft=.csv'''
 
     def filter_data(self, name):
-
         values = self.data[name].get('data').get('dataSets')[0].get('series').get("0:0:0:0").get('observations')
         dates = self.data[name].get('data').get('structure').get('dimensions').get('observation')[0].get('values')
         x_values = [r.get('name') for r in dates if r.get('name') is not None]
@@ -58,22 +60,41 @@ class NorwayDataManager:
         df = pd.DataFrame({'x_values': x_values, name.capitalize(): y_values})
         return df
 
+    def filter_cpi_data(self, data):
+        lines = data.split()
+        values = [c.split(',') for c in lines[3:]]
+        result = [(datetime.strptime(e[0], '%b.%y'), e[1]) for e in values if
+                  datetime.strptime(e[0], '%b.%y') >= datetime(2022, 1, 1)]
+        x_values = [e[0] for e in result]
+        y_values = [e[1] for e in result]
+        return x_values, y_values
+
+    async def get_panda_dataframe_cpi(self, data):
+        x_values, y_values = self.filter_cpi_data(data)
+        df = pd.DataFrame({'x_values': x_values, 'CPI': y_values})
+        return df
+
+    async def get_cpi_data_from_csv(self):
+        response = await request(self.csv_url, method="GET")
+        result = await response.string()
+        return result
+
 
 class NorwayPlotManager:
 
-    def __init__(self, dataframe):
-        self.df = dataframe
+    def __init__(self, dataframes):
+        self.dfs = dataframes
         self.figures = {}
 
     def plot_dataframe(self, plot_type):
-        index = self.df.columns
+        index = self.dfs[plot_type].columns
         fig, ax = plt.subplots()
-        ax.plot(index[0], index[1], data=self.df, marker='o', markerfacecolor='blue', markersize=4,
+        ax.plot(index[0], index[1], data=self.dfs[plot_type], marker='o', markerfacecolor='blue', markersize=4,
                 color='skyblue',
                 linewidth=4)
         if plot_type == 'currency':
-            min_tick_value = int(min(self.df[index[1]]))
-            max_tick_value = int(max(self.df[index[1]])) + 1
+            min_tick_value = int(min(self.dfs.get(plot_type)[index[1]]))
+            max_tick_value = int(max(self.dfs.get(plot_type)[index[1]])) + 1
             ax.set_yticks(np.arange(min_tick_value, max_tick_value, 0.5))
             ax.xaxis.set_major_locator(mdates.DayLocator(interval=7))
         fig.autofmt_xdate()
