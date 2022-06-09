@@ -33,7 +33,7 @@ class PageManager:
             if country == 'Argentina':
                 fig = self.arg_plot_manager.get_figure(div)
             # Disabled for CPI. I have to find a time series for that.
-            if country == 'Norway' and not div == 'cpi':
+            if country == 'Norway':
                 fig = self.norway_plot_manager.get_figure(div)
             pyscript.write(div, fig)
 
@@ -59,7 +59,7 @@ class PageManager:
             div_name = fig_name = select_name.replace('select-country-', '')
             if value == 'Argentina':
                 pyscript.write(div_name, self.arg_plot_manager.get_figure(fig_name))
-            if value == 'Norway' and div_name != 'cpi':
+            if value == 'Norway':
                 pyscript.write(div_name, self.norway_plot_manager.get_figure(fig_name))
             if e:
                 e.preventDefault()
@@ -74,16 +74,14 @@ class PageManager:
         if country == 'Argentina':
             fig = self.arg_plot_manager.get_figure(index_type)
 
-        # I have to get CPI for Norway. It is disabled currently.
-        if country == 'Norway' and index_type != 'cpi':
+        if country == 'Norway':
             fig = self.norway_plot_manager.get_figure(index_type)
 
-        if not (country == 'Norway' and index_type == 'cpi'):
-            old_width, old_height = fig.get_size_inches()
-            fig.set_size_inches(13, 7)
-            pyscript.write('plot-modal', fig)
-            self.modal.show()
-            fig.set_size_inches(old_width, old_height)
+        old_width, old_height = fig.get_size_inches()
+        fig.set_size_inches(13, 7)
+        pyscript.write('plot-modal', fig)
+        self.modal.show()
+        fig.set_size_inches(old_width, old_height)
 
     def init_page(self):
         self.init_modal()
@@ -93,20 +91,31 @@ class PageManager:
 
 
 async def main():
+    # Use API Manager to get time series from different sources
     aam = ArgentinaApiManager()
     nam = NorwayApiManager()
     await aam.get_all_time_series()
     await nam.get_all_time_series()
+    # Use Data Manager to parse data properly and get a dataframe
     ndm = NorwayDataManager(nam.data)
     adm = ArgentinaDataManager(aam.data)
     df2 = adm.get_panda_dataframe('currency')
     df3 = adm.get_panda_dataframe('cpi')
     df1 = ndm.get_panda_dataframe('currency')
+    # Use Plot Manager to create figures from dataframes
     apm = ArgentinaPlotManager({'currency': df2, 'cpi': df3})
     apm.plot_dataframe("currency")
     apm.plot_dataframe("cpi")
-    npm = NorwayPlotManager(df1)
+    # Use a csv file as data source for CPI
+    # TODO - refactor/improve the manager logic
+    ndm2 = NorwayDataManager(csv_mode=True)
+    data = await ndm2.get_cpi_data_from_csv()
+    df4 = await ndm2.get_panda_dataframe_cpi(data)
+    # Use Plot Manager to plot both indices
+    npm = NorwayPlotManager({'currency': df1, 'cpi': df4})
     npm.plot_dataframe("currency")
+    npm.plot_dataframe("cpi")
+    # Use Page Manager to register events and handle the page logic
     page_manager = PageManager(apm, npm)
     page_manager.init_page()
 
