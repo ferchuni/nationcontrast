@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 import json
 from request import request
 import matplotlib.pyplot as plt
@@ -22,8 +23,12 @@ class ArgentinaApiManager:
         kwargs["ids"] = ",".join(ids)
         return "{}{}?{}".format(self.api_base_url, "series", urllib.parse.urlencode(kwargs))
 
-    async def get_data_from_api(self, time_series_name):
-        api_url = self.get_api_url_([time_series_name], format="json", start_date=2022)
+    async def get_data_from_api(self, time_series_name, index_name):
+        if index_name == 'cpi':
+            params = {'format': "json", 'representation_mode': 'percent_change_a_year_ago'}
+        else:
+            params = {'format': "json", 'start_date': '2022'}
+        api_url = self.get_api_url_([time_series_name], **params)
         headers = {"Content-type": "application/json"}
         response = await request(api_url, method="GET", headers=headers)
         result = await response.json()
@@ -32,7 +37,7 @@ class ArgentinaApiManager:
     async def get_time_series(self, index_name):
         series_name = self.time_series_name_mapping[index_name]
         if series_name:
-            result = await self.get_data_from_api(series_name)
+            result = await self.get_data_from_api(series_name, index_name)
             self.data[index_name] = result
 
     async def get_all_time_series(self):
@@ -46,8 +51,10 @@ class ArgentinaDataManager:
         self.data = data
 
     def filter_data(self, name):
-        x_values = [r[0] for r in self.data[name].get('data') if r[1] is not None]
-        y_values = [float(r[1]) for r in self.data[name].get('data') if r[1] is not None]
+        x_values = [r[0] for r in self.data[name].get('data') if
+                    datetime.datetime.strptime(r[0], '%Y-%m-%d') >= datetime.datetime(2022, 1, 1) and r[1] is not None]
+        y_values = [int(r[1] * 100) if name == 'cpi' else float(r[1]) for r in self.data[name].get('data') if
+                    datetime.datetime.strptime(r[0], '%Y-%m-%d') >= datetime.datetime(2022, 1, 1) and r[1] is not None]
         return x_values, y_values
 
     def get_panda_dataframe(self, name):
