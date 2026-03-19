@@ -1,4 +1,4 @@
-packages = ["pandas", "matplotlib"]
+packages = ["pandas", "matplotlib", "pyarrow"]
 
 [files]
 "./request.py" = "./request.py"

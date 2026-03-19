@@ -1,6 +1,8 @@
 import asyncio
 import json
 from request import request
+import matplotlib
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import numpy as np
