@@ -77,21 +77,19 @@ class ArgentinaPlotManager:
         fig, ax = plt.subplots()
         fig.set_facecolor('none')
         ax.set_facecolor('#161b22')
-        ax.plot(index[0], index[1], data=self.dfs[plot_type], marker='o', markerfacecolor='#66ffdd',
-                markersize=3, color='#00d4aa', linewidth=2)
+        n_points = len(self.dfs[plot_type])
+        marker = 'o' if n_points < 100 else None
+        markersize = 3 if n_points < 100 else 0
+        ax.plot(index[0], index[1], data=self.dfs[plot_type], marker=marker, markerfacecolor='#66ffdd',
+                markersize=markersize, color='#00d4aa', linewidth=2)
         ax.tick_params(colors='#8b949e')
         ax.xaxis.label.set_color('#c9d1d9')
         ax.yaxis.label.set_color('#c9d1d9')
         ax.grid(True, alpha=0.15, color='#8b949e')
         for spine in ax.spines.values():
             spine.set_visible(False)
-        if plot_type == 'currency':
-            min_tick_value = int(min(self.dfs.get(plot_type)[index[1]]))
-            max_tick_value = int(max(self.dfs.get(plot_type)[index[1]])) + 1
-            ax.set_yticks(np.arange(min_tick_value, max_tick_value, 0.5))
-            ax.xaxis.set_major_locator(mdates.DayLocator(interval=14))
-        else:
-            ax.xaxis.set_major_locator(plt.MaxNLocator(nbins=8))
+        ax.xaxis.set_major_locator(plt.MaxNLocator(nbins=8))
+        ax.yaxis.set_major_locator(plt.MaxNLocator(nbins=10))
         ax.tick_params(axis='x', rotation=45, labelsize=7)
         fig.autofmt_xdate()
         plt.legend(facecolor='#161b22cc', edgecolor='#30363d', labelcolor='#c9d1d9')
