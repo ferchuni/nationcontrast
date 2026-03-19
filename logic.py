@@ -8,7 +8,9 @@ import pandas as pd
 import urllib.parse
 from js import console
 from js import bootstrap
-from pyodide import to_js
+from js import document
+from pyodide.ffi import to_js
+from pyscript import display
 
 from argentina import ArgentinaApiManager, ArgentinaDataManager, ArgentinaPlotManager
 from norway import NorwayApiManager, NorwayDataManager, NorwayPlotManager
@@ -35,7 +37,7 @@ class PageManager:
             # Disabled for CPI. I have to find a time series for that.
             if country == 'Norway':
                 fig = self.norway_plot_manager.get_figure(div)
-            pyscript.write(div, fig)
+            display(fig, target=div, append=False)
 
     def add_zoom_events(self, plot_names):
         def evt(e=None):
@@ -58,9 +60,9 @@ class PageManager:
             select_name = e.target.id
             div_name = fig_name = select_name.replace('select-country-', '')
             if value == 'Argentina':
-                pyscript.write(div_name, self.arg_plot_manager.get_figure(fig_name))
+                display(self.arg_plot_manager.get_figure(fig_name), target=div_name, append=False)
             if value == 'Norway':
-                pyscript.write(div_name, self.norway_plot_manager.get_figure(fig_name))
+                display(self.norway_plot_manager.get_figure(fig_name), target=div_name, append=False)
             if e:
                 e.preventDefault()
             return False
@@ -79,7 +81,7 @@ class PageManager:
 
         old_width, old_height = fig.get_size_inches()
         fig.set_size_inches(13, 7)
-        pyscript.write('plot-modal', fig)
+        display(fig, target='plot-modal', append=False)
         self.modal.show()
         fig.set_size_inches(old_width, old_height)
 
@@ -120,4 +122,4 @@ async def main():
     page_manager.init_page()
 
 
-main()
+await main()

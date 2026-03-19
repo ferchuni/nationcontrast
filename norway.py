@@ -10,7 +10,7 @@ import pandas as pd
 import urllib.parse
 from js import console
 from js import bootstrap
-from pyodide import to_js
+from pyodide.ffi import to_js
 
 
 class NorwayApiManager:
@@ -76,7 +76,7 @@ class NorwayDataManager:
 
     async def get_cpi_data_from_csv(self):
         response = await request(self.csv_url, method="GET")
-        result = await response.string()
+        result = await response.text()
         return result
 
 

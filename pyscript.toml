@@ -1,0 +1,6 @@
+packages = ["pandas", "matplotlib"]
+
+[files]
+"./request.py" = "./request.py"
+"./argentina.py" = "./argentina.py"
+"./norway.py" = "./norway.py"

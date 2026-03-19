@@ -9,7 +9,7 @@ import pandas as pd
 import urllib.parse
 from js import console
 from js import bootstrap
-from pyodide import to_js
+from pyodide.ffi import to_js
 
 
 class ArgentinaApiManager:
