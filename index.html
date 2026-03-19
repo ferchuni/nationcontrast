@@ -1,9 +1,9 @@
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
     <head>
-        <title>Nation Contrast</title>
+        <title>NationContrast</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="description" content="">
+        <meta name="description" content="Compare economic indicators between countries">
         <meta name="author" content="">
 
         <link rel="stylesheet" href="https://pyscript.net/releases/2026.3.1/core.css" />
@@ -18,111 +18,99 @@
 
     <body>
     <script type="py" src="./logic.py" config="./pyscript.toml" async></script>
+
+        <nav class="navbar navbar-expand-lg border-bottom border-secondary mb-4">
+            <div class="container">
+                <span class="navbar-brand fw-bold fs-3">NationContrast</span>
+                <span class="navbar-text text-secondary small">Economic Indicators Dashboard</span>
+            </div>
+        </nav>
+
         <div class="container">
-            <div class="header clearfix">
-                <nav>
-                    <ul class="nav nav-pills float-right">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">About</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Contact</a>
-                        </li>
-                    </ul>
-                </nav>
-                <h3 class="text-body-secondary">NationContrast</h3>
-            </div>
-
-            <div class="jumbotron">
-                <h1 class="display-5">Country differences</h1>
-                <p class="lead">This is a dashboard to compare economic indicators between countries</p>
-                <p></p>
-            </div>
-
-            <div class="row marketing">
+            <div class="row g-4">
                 <div class="col-lg-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Currency Exchange Rate</h5>
-                            <p class="card-text">The exchange rate is the value of one nation's currency versus the currency of
-                                another nation.
-                                It compares against 1 USD.
+                    <div class="card dashboard-card shadow rounded-4 border-0 h-100">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title fw-semibold mb-0">Currency Exchange Rate</h5>
+                                <button type="button" class="btn btn-outline-light btn-sm rounded-pill" id="zoom-currency">Zoom</button>
+                            </div>
+                            <p class="card-text text-secondary small mb-3">
+                                The exchange rate is the value of one nation's currency versus the currency of
+                                another nation. It compares against 1 USD.
                             </p>
-                            <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
                         </div>
-                        <div id="currency">
-                            <div class="d-flex justify-content-center">
-                                <strong>Gathering data in real time ... </strong>
-                                <div class="spinner-border spinner-border-sm" role="status">
+                        <div id="currency" class="chart-container px-3">
+                            <div class="d-flex justify-content-center py-4">
+                                <strong class="text-secondary me-2">Gathering data in real time ... </strong>
+                                <div class="spinner-border spinner-border-sm text-info" role="status">
                                     <span class="visually-hidden">Loading...</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body pt-2 pb-3 px-4">
                             <form class="form-inline justify-content-center">
-                                <select class="form-control form-control-sm" id="select-country-currency">
+                                <select class="form-select form-select-sm" id="select-country-currency">
                                     <option>Argentina</option>
                                     <option>Norway</option>
                                 </select>
                             </form>
                         </div>
-                        <button type="button" class="btn btn-secondary btn-sm" id="zoom-currency">Zoom</button>
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Consumer Price Index</h5>
-                            <p class="card-text">It measures the overall change in consumer prices over time based on a
+                    <div class="card dashboard-card shadow rounded-4 border-0 h-100">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title fw-semibold mb-0">Consumer Price Index</h5>
+                                <button type="button" class="btn btn-outline-light btn-sm rounded-pill" id="zoom-cpi">Zoom</button>
+                            </div>
+                            <p class="card-text text-secondary small mb-3">
+                                It measures the overall change in consumer prices over time based on a
                                 representative basket of goods and services.
-                            <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                            </p>
                         </div>
-                        <div id="cpi">
-                            <div class="d-flex justify-content-center">
-                                <strong>Gathering data in real time ... </strong>
-                                <div class="spinner-border spinner-border-sm" role="status">
+                        <div id="cpi" class="chart-container px-3">
+                            <div class="d-flex justify-content-center py-4">
+                                <strong class="text-secondary me-2">Gathering data in real time ... </strong>
+                                <div class="spinner-border spinner-border-sm text-info" role="status">
                                     <span class="visually-hidden">Loading...</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body pt-2 pb-3 px-4">
                             <form class="form-inline justify-content-center">
-                                <select class="form-control form-control-sm" id="select-country-cpi">
+                                <select class="form-select form-select-sm" id="select-country-cpi">
                                     <option>Argentina</option>
                                     <option>Norway</option>
                                 </select>
                             </form>
                         </div>
-                        <button type="button" class="btn btn-secondary btn-sm" id="zoom-cpi">Zoom</button>
                     </div>
                 </div>
 
                 <div class="modal fade" id="full-plot" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-xl">
-                        <div class="modal-content">
-                            <div class="modal-header">
+                        <div class="modal-content border-0 shadow-lg rounded-4">
+                            <div class="modal-header border-secondary">
                                 <h5 class="modal-title" id="ModalLabel">Argentina Currency</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <div class="modal-body">
+                            <div class="modal-body p-4">
                                 <div id="plot-modal"></div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <div class="modal-footer border-secondary">
+                                <button type="button" class="btn btn-outline-light btn-sm rounded-pill" data-bs-dismiss="modal">Close</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <footer class="footer">
-                    <p>© Fernando 2022</p>
+                <footer class="footer text-center py-4 mt-4">
+                    <p class="text-secondary small mb-0">&copy; 2026 NationContrast</p>
                 </footer>
 
             </div>
-
         </div>
 
     </body>

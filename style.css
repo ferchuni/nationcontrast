@@ -1,80 +1,148 @@
 body {
-    padding-top: 20px;
+    padding-top: 0;
     padding-bottom: 20px;
+    background-color: #0d1117;
+    color: #e6edf3;
 }
 
-.header,
-.marketing,
+/* Navbar */
+.navbar {
+    background-color: rgba(13, 17, 23, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 1rem 0;
+}
+
+.navbar-brand {
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #00d4aa, #00b4d8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Dashboard cards */
+.dashboard-card {
+    background-color: #161b22;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 212, 170, 0.1),
+                0 4px 15px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dashboard-card .card-title {
+    color: #e6edf3;
+}
+
+/* Chart containers */
+.chart-container {
+    padding: 0.5rem 1rem;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chart-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+}
+
+/* Form selects in dark mode */
+.form-select {
+    background-color: #21262d;
+    border-color: #30363d;
+    color: #e6edf3;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-select:focus {
+    background-color: #21262d;
+    border-color: #00d4aa;
+    color: #e6edf3;
+    box-shadow: 0 0 0 0.2rem rgba(0, 212, 170, 0.25);
+}
+
+.form-select option {
+    background-color: #21262d;
+    color: #e6edf3;
+}
+
+/* Also style form-control for backwards compat */
+.form-control {
+    background-color: #21262d;
+    border-color: #30363d;
+    color: #e6edf3;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus {
+    background-color: #21262d;
+    border-color: #00d4aa;
+    color: #e6edf3;
+    box-shadow: 0 0 0 0.2rem rgba(0, 212, 170, 0.25);
+}
+
+/* Buttons */
+.btn-outline-light {
+    border-color: #30363d;
+    color: #8b949e;
+    font-size: 0.8rem;
+    padding: 0.25rem 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.btn-outline-light:hover {
+    background-color: rgba(0, 212, 170, 0.15);
+    border-color: #00d4aa;
+    color: #00d4aa;
+}
+
+/* Modal styling */
+.modal-content {
+    background-color: #161b22;
+}
+
+.modal-header {
+    border-bottom-color: #21262d;
+}
+
+.modal-footer {
+    border-top-color: #21262d;
+}
+
+/* Footer */
 .footer {
-    padding-right: 15px;
-    padding-left: 15px;
+    border-top: 1px solid #21262d;
 }
 
-.header {
-    padding-bottom: 20px;
-    border-bottom: 1px solid #e5e5e5;
+/* Spinner accent */
+.spinner-border.text-info {
+    color: #00d4aa !important;
 }
 
-.header h3 {
-    margin-top: 0;
-    margin-bottom: 0;
-    line-height: 40px;
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
 }
 
-.footer {
-    padding-top: 19px;
-    color: #777;
-    border-top: 1px solid #e5e5e5;
-}
-
+/* Responsive adjustments */
 @media (min-width: 768px) {
     .container {
-
+        max-width: 1140px;
     }
 }
 
-.container-narrow > hr {
-    margin: 30px 0;
-}
-
-
-.jumbotron {
-    text-align: center;
-    border-bottom: 1px solid #e5e5e5;
-}
-
-.jumbotron .btn {
-    padding: 14px 24px;
-    font-size: 21px;
-}
-
-.marketing {
-    margin: 40px 0;
-}
-
-.marketing p + h4 {
-    margin-top: 28px;
-}
-
-
-@media screen and (min-width: 768px) {
-
-    .header,
-    .marketing,
-    .footer {
-        padding-right: 0;
-        padding-left: 0;
-    }
-
-    .header {
-        margin-bottom: 30px;
-    }
-
-    .jumbotron {
-        border-bottom: 0;
+@media (max-width: 767px) {
+    .navbar-text {
+        display: none;
     }
 }
 
+/* Table styling if used */
 .table > tbody > tr > td {
     vertical-align: middle;
 }

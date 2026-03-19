@@ -75,16 +75,24 @@ class ArgentinaPlotManager:
     def plot_dataframe(self, plot_type):
         index = self.dfs[plot_type].columns
         fig, ax = plt.subplots()
-        ax.plot(index[0], index[1], data=self.dfs[plot_type], marker='o', markerfacecolor='blue', markersize=4,
-                color='skyblue',
-                linewidth=4)
+        fig.set_facecolor('#1a1a2e')
+        ax.set_facecolor('#1a1a2e')
+        ax.plot(index[0], index[1], data=self.dfs[plot_type], marker='o', markerfacecolor='#66ffdd',
+                markersize=3, color='#00d4aa', linewidth=2)
+        ax.tick_params(colors='#8b949e')
+        ax.xaxis.label.set_color('#c9d1d9')
+        ax.yaxis.label.set_color('#c9d1d9')
+        ax.grid(True, alpha=0.15, color='#8b949e')
+        for spine in ax.spines.values():
+            spine.set_color('#30363d')
         if plot_type == 'currency':
             min_tick_value = int(min(self.dfs.get(plot_type)[index[1]]))
             max_tick_value = int(max(self.dfs.get(plot_type)[index[1]])) + 1
             ax.set_yticks(np.arange(min_tick_value, max_tick_value, 0.5))
             ax.xaxis.set_major_locator(mdates.DayLocator(interval=7))
         fig.autofmt_xdate()
-        plt.legend()
+        plt.legend(facecolor='#1a1a2e', edgecolor='#30363d', labelcolor='#c9d1d9')
+        fig.tight_layout()
         self.figures[plot_type] = fig
         return fig
 

@@ -17,6 +17,15 @@ from pyscript import display
 from argentina import ArgentinaApiManager, ArgentinaDataManager, ArgentinaPlotManager
 from norway import NorwayApiManager, NorwayDataManager, NorwayPlotManager
 
+# Set matplotlib dark style for all plots
+plt.style.use('dark_background')
+plt.rcParams['figure.facecolor'] = '#1a1a2e'
+plt.rcParams['axes.facecolor'] = '#1a1a2e'
+plt.rcParams['text.color'] = '#c9d1d9'
+plt.rcParams['axes.labelcolor'] = '#c9d1d9'
+plt.rcParams['xtick.color'] = '#8b949e'
+plt.rcParams['ytick.color'] = '#8b949e'
+
 
 class PageManager:
 
