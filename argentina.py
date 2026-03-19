@@ -25,9 +25,9 @@ class ArgentinaApiManager:
 
     async def get_data_from_api(self, time_series_name, index_name):
         if index_name == 'cpi':
-            params = {'format': "json", 'representation_mode': 'percent_change_a_year_ago'}
+            params = {'format': "json", 'representation_mode': 'percent_change_a_year_ago', 'start_date': '2022', 'limit': 5000}
         else:
-            params = {'format': "json", 'start_date': '2022'}
+            params = {'format': "json", 'start_date': '2022', 'limit': 5000}
         api_url = self.get_api_url_([time_series_name], **params)
         headers = {"Content-type": "application/json"}
         response = await request(api_url, method="GET", headers=headers)
