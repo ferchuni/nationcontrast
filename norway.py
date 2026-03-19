@@ -85,7 +85,8 @@ class NorwayDataManager:
             x_values, y_values = self.filter_currency_data()
         else:
             x_values, y_values = self.filter_cpi_data()
-        df = pd.DataFrame({'x_values': x_values, name.capitalize(): y_values})
+        label = 'CPI' if name == 'cpi' else name.capitalize()
+        df = pd.DataFrame({'x_values': x_values, label: y_values})
         return df
 
 
