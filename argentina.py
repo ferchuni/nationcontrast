@@ -16,7 +16,7 @@ class ArgentinaApiManager:
 
     def __init__(self):
         self.api_base_url = "https://apis.datos.gob.ar/series/api/"
-        self.time_series_name_mapping = {'currency': '168.1_T_CAMBIOR_D_0_0_26', 'cpi': '105.1_I2N_2016_M_14'}
+        self.time_series_name_mapping = {'currency': '168.1_T_CAMBIOR_D_0_0_26', 'cpi': '148.3_INIVELNAL_DICI_M_26'}
         self.data = {'currency': [], 'cpi': []}
 
     def get_api_url_(self, ids, **kwargs):
