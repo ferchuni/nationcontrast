@@ -93,12 +93,8 @@ class PageManager:
 
         title = f"{country} {index_type.replace('cpi', 'CPI').replace('currency', 'Currency')}"
         document.getElementById('ModalLabel').textContent = title
-        old_width, old_height = fig.get_size_inches()
-        fig.set_size_inches(12, 6)
-        fig.tight_layout()
         display(fig, target='plot-modal', append=False)
         self.modal.show()
-        fig.set_size_inches(old_width, old_height)
 
     def init_page(self):
         self.init_modal()
