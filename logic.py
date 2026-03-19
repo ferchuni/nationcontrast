@@ -19,8 +19,10 @@ from norway import NorwayApiManager, NorwayDataManager, NorwayPlotManager
 
 # Set matplotlib dark style for all plots
 plt.style.use('dark_background')
-plt.rcParams['figure.facecolor'] = '#1a1a2e'
-plt.rcParams['axes.facecolor'] = '#1a1a2e'
+plt.rcParams['figure.facecolor'] = 'none'
+plt.rcParams['savefig.facecolor'] = 'none'
+plt.rcParams['savefig.transparent'] = True
+plt.rcParams['axes.facecolor'] = '#161b22'
 plt.rcParams['text.color'] = '#c9d1d9'
 plt.rcParams['axes.labelcolor'] = '#c9d1d9'
 plt.rcParams['xtick.color'] = '#8b949e'
@@ -90,8 +92,11 @@ class PageManager:
         if country == 'Norway':
             fig = self.norway_plot_manager.get_figure(index_type)
 
+        title = f"{country} {index_type.replace('cpi', 'CPI').replace('currency', 'Currency')}"
+        document.getElementById('ModalLabel').textContent = title
         old_width, old_height = fig.get_size_inches()
-        fig.set_size_inches(13, 7)
+        fig.set_size_inches(12, 6)
+        fig.tight_layout()
         display(fig, target='plot-modal', append=False)
         self.modal.show()
         fig.set_size_inches(old_width, old_height)
