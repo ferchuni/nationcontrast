@@ -36,7 +36,6 @@ class PageManager:
             country = select.options.item(select.selectedIndex).text
             if country == 'Argentina':
                 fig = self.arg_plot_manager.get_figure(div)
-            # Disabled for CPI. I have to find a time series for that.
             if country == 'Norway':
                 fig = self.norway_plot_manager.get_figure(div)
             display(fig, target=div, append=False)
@@ -101,22 +100,17 @@ async def main():
     await aam.get_all_time_series()
     await nam.get_all_time_series()
     # Use Data Manager to parse data properly and get a dataframe
-    ndm = NorwayDataManager(nam.data)
     adm = ArgentinaDataManager(aam.data)
-    df2 = adm.get_panda_dataframe('currency')
-    df3 = adm.get_panda_dataframe('cpi')
-    df1 = ndm.get_panda_dataframe('currency')
+    ndm = NorwayDataManager(nam.data)
+    df_arg_currency = adm.get_panda_dataframe('currency')
+    df_arg_cpi = adm.get_panda_dataframe('cpi')
+    df_nor_currency = ndm.get_panda_dataframe('currency')
+    df_nor_cpi = ndm.get_panda_dataframe('cpi')
     # Use Plot Manager to create figures from dataframes
-    apm = ArgentinaPlotManager({'currency': df2, 'cpi': df3})
+    apm = ArgentinaPlotManager({'currency': df_arg_currency, 'cpi': df_arg_cpi})
     apm.plot_dataframe("currency")
     apm.plot_dataframe("cpi")
-    # Use a csv file as data source for CPI
-    # TODO - refactor/improve the manager logic
-    ndm2 = NorwayDataManager(csv_mode=True)
-    data = await ndm2.get_cpi_data_from_csv()
-    df4 = await ndm2.get_panda_dataframe_cpi(data)
-    # Use Plot Manager to plot both indices
-    npm = NorwayPlotManager({'currency': df1, 'cpi': df4})
+    npm = NorwayPlotManager({'currency': df_nor_currency, 'cpi': df_nor_cpi})
     npm.plot_dataframe("currency")
     npm.plot_dataframe("cpi")
     # Use Page Manager to register events and handle the page logic
