@@ -1,15 +1,7 @@
-import asyncio
 import datetime
-import json
 from request import request
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-import numpy as np
 import pandas as pd
 import urllib.parse
-from js import console
-from js import bootstrap
-from pyodide.ffi import to_js
 
 
 class ArgentinaApiManager:
@@ -51,51 +43,19 @@ class ArgentinaDataManager:
         self.data = data
 
     def filter_data(self, name):
-        x_values = [r[0] for r in self.data[name].get('data') if
-                    datetime.datetime.strptime(r[0], '%Y-%m-%d') >= datetime.datetime(2022, 1, 1) and r[1] is not None]
-        y_values = [int(r[1] * 100) if name == 'cpi' else float(r[1]) for r in self.data[name].get('data') if
-                    datetime.datetime.strptime(r[0], '%Y-%m-%d') >= datetime.datetime(2022, 1, 1) and r[1] is not None]
+        x_values = []
+        y_values = []
+        for r in self.data[name].get('data'):
+            if r[1] is None:
+                continue
+            if datetime.datetime.strptime(r[0], '%Y-%m-%d') < datetime.datetime(2022, 1, 1):
+                continue
+            x_values.append(r[0])
+            y_values.append(int(r[1] * 100) if name == 'cpi' else float(r[1]))
         return x_values, y_values
 
     def get_panda_dataframe(self, name):
         x_values, y_values = self.filter_data(name)
-        if name == 'currency':
-            df = pd.DataFrame({'x_values': x_values, 'Currency': y_values})
-        else:
-            df = pd.DataFrame({'x_values': x_values, 'CPI': y_values})
+        label = 'CPI' if name == 'cpi' else 'Currency'
+        df = pd.DataFrame({'x_values': x_values, label: y_values})
         return df
-
-
-class ArgentinaPlotManager:
-
-    def __init__(self, dataframes):
-        self.dfs = dataframes
-        self.figures = {}
-
-    def plot_dataframe(self, plot_type):
-        index = self.dfs[plot_type].columns
-        fig, ax = plt.subplots()
-        fig.set_facecolor('none')
-        ax.set_facecolor('#161b22')
-        n_points = len(self.dfs[plot_type])
-        marker = 'o' if n_points < 100 else None
-        markersize = 3 if n_points < 100 else 0
-        ax.plot(index[0], index[1], data=self.dfs[plot_type], marker=marker, markerfacecolor='#66ffdd',
-                markersize=markersize, color='#00d4aa', linewidth=2)
-        ax.tick_params(colors='#8b949e')
-        ax.xaxis.label.set_color('#c9d1d9')
-        ax.yaxis.label.set_color('#c9d1d9')
-        ax.grid(True, alpha=0.15, color='#8b949e')
-        for spine in ax.spines.values():
-            spine.set_visible(False)
-        ax.xaxis.set_major_locator(plt.MaxNLocator(nbins=8))
-        ax.yaxis.set_major_locator(plt.MaxNLocator(nbins=10))
-        ax.tick_params(axis='x', rotation=45, labelsize=7)
-        fig.autofmt_xdate()
-        plt.legend(facecolor='#161b22cc', edgecolor='#30363d', labelcolor='#c9d1d9')
-        fig.tight_layout()
-        self.figures[plot_type] = fig
-        return fig
-
-    def get_figure(self, name):
-        return self.figures[name]

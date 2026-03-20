@@ -1,21 +1,14 @@
-import asyncio
-import json
-from request import request
 import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-import numpy as np
-import pandas as pd
-import urllib.parse
 from js import console
 from js import bootstrap
 from js import document
-from pyodide.ffi import to_js
 from pyscript import display
 
-from argentina import ArgentinaApiManager, ArgentinaDataManager, ArgentinaPlotManager
-from norway import NorwayApiManager, NorwayDataManager, NorwayPlotManager
+from argentina import ArgentinaApiManager, ArgentinaDataManager
+from norway import NorwayApiManager, NorwayDataManager
+from plot import PlotManager
 
 # Set matplotlib dark style for all plots
 plt.style.use('dark_background')
@@ -34,7 +27,6 @@ class PageManager:
     def __init__(self, arg_plot_manager=None, norway_plot_manager=None):
         self.div_ids = ['currency', 'cpi']
         self.modal = None
-        self.current_fig = None
         self.arg_plot_manager = arg_plot_manager
         self.norway_plot_manager = norway_plot_manager
 
@@ -81,7 +73,6 @@ class PageManager:
 
         for name in div_names:
             select_link = document.getElementById(f'select-country-{name}')
-            console.log(select_link)
             select_link.onchange = evt
 
     def zoom_plot(self, index_type, country):
@@ -104,28 +95,34 @@ class PageManager:
 
 
 async def main():
-    # Use API Manager to get time series from different sources
-    aam = ArgentinaApiManager()
-    nam = NorwayApiManager()
-    await aam.get_all_time_series()
-    await nam.get_all_time_series()
-    # Use Data Manager to parse data properly and get a dataframe
-    adm = ArgentinaDataManager(aam.data)
-    ndm = NorwayDataManager(nam.data)
-    df_arg_currency = adm.get_panda_dataframe('currency')
-    df_arg_cpi = adm.get_panda_dataframe('cpi')
-    df_nor_currency = ndm.get_panda_dataframe('currency')
-    df_nor_cpi = ndm.get_panda_dataframe('cpi')
-    # Use Plot Manager to create figures from dataframes
-    apm = ArgentinaPlotManager({'currency': df_arg_currency, 'cpi': df_arg_cpi})
-    apm.plot_dataframe("currency")
-    apm.plot_dataframe("cpi")
-    npm = NorwayPlotManager({'currency': df_nor_currency, 'cpi': df_nor_cpi})
-    npm.plot_dataframe("currency")
-    npm.plot_dataframe("cpi")
-    # Use Page Manager to register events and handle the page logic
-    page_manager = PageManager(apm, npm)
-    page_manager.init_page()
+    try:
+        # Use API Manager to get time series from different sources
+        aam = ArgentinaApiManager()
+        nam = NorwayApiManager()
+        await aam.get_all_time_series()
+        await nam.get_all_time_series()
+        # Use Data Manager to parse data properly and get a dataframe
+        adm = ArgentinaDataManager(aam.data)
+        ndm = NorwayDataManager(nam.data)
+        df_arg_currency = adm.get_panda_dataframe('currency')
+        df_arg_cpi = adm.get_panda_dataframe('cpi')
+        df_nor_currency = ndm.get_panda_dataframe('currency')
+        df_nor_cpi = ndm.get_panda_dataframe('cpi')
+        # Use Plot Manager to create figures from dataframes
+        apm = PlotManager({'currency': df_arg_currency, 'cpi': df_arg_cpi})
+        apm.plot_dataframe("currency")
+        apm.plot_dataframe("cpi")
+        npm = PlotManager({'currency': df_nor_currency, 'cpi': df_nor_cpi})
+        npm.plot_dataframe("currency")
+        npm.plot_dataframe("cpi")
+        # Use Page Manager to register events and handle the page logic
+        page_manager = PageManager(apm, npm)
+        page_manager.init_page()
+    except Exception as e:
+        console.error(f"Error loading dashboard: {e}")
+        for div_id in ['currency', 'cpi']:
+            el = document.getElementById(div_id)
+            el.innerHTML = f'<p class="text-danger text-center p-4">Error loading data. Please refresh.</p>'
 
 
 await main()

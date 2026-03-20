@@ -4,3 +4,4 @@ packages = ["pandas", "matplotlib", "pyarrow"]
 "./request.py" = "./request.py"
 "./argentina.py" = "./argentina.py"
 "./norway.py" = "./norway.py"
+"./plot.py" = "./plot.py"
