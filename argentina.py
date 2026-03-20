@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 from request import request
 import pandas as pd
@@ -33,8 +34,7 @@ class ArgentinaApiManager:
             self.data[index_name] = result
 
     async def get_all_time_series(self):
-        await self.get_time_series('currency')
-        await self.get_time_series('cpi')
+        await asyncio.gather(self.get_time_series('currency'), self.get_time_series('cpi'))
 
 
 class ArgentinaDataManager:

@@ -1,3 +1,4 @@
+import asyncio
 import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
@@ -99,8 +100,7 @@ async def main():
         # Use API Manager to get time series from different sources
         aam = ArgentinaApiManager()
         nam = NorwayApiManager()
-        await aam.get_all_time_series()
-        await nam.get_all_time_series()
+        await asyncio.gather(aam.get_all_time_series(), nam.get_all_time_series())
         # Use Data Manager to parse data properly and get a dataframe
         adm = ArgentinaDataManager(aam.data)
         ndm = NorwayDataManager(nam.data)
